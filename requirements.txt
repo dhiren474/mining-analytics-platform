@@ -1,0 +1,7 @@
+# requirements.txt — add these lines
+kafka-python==2.0.2
+confluent-kafka==2.3.0
+faker==22.0.0
+python-dotenv==1.0.0
+pydantic==2.5.0
+loguru==0.7.2
