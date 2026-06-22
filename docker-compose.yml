@@ -142,3 +142,42 @@ services:
 volumes:
   postgres_data:
   grafana_data:
+
+
+
+
+# ── Spark Master ──────────────────────────────────────
+  spark-master:
+    image: apache/spark:3.5.1
+    env_file: .env
+    environment:
+      SPARK_MODE: master
+      SPARK_NO_DAEMONIZE: "true"
+    command: >
+      bash -c "/opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+      --host spark-master
+      --port 7077
+      --webui-port 8080"
+    ports:
+      - "8082:8080"    # Spark UI
+      - "7077:7077"    # Spark master
+    volumes:
+      - ./spark:/opt/spark-apps
+
+  # ── Spark Worker ──────────────────────────────────────
+  spark-worker:
+    image: apache/spark:3.5.1
+    env_file: .env
+    depends_on:
+      - spark-master
+    command: >
+      bash -c "/opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker
+      spark://spark-master:7077
+      --webui-port 8081"
+    environment:
+      SPARK_WORKER_MEMORY: ${SPARK_WORKER_MEMORY:-2g}
+      SPARK_WORKER_CORES: ${SPARK_WORKER_CORES:-2}
+    ports:
+      - "8083:8081"    # Worker UI
+    volumes:
+      - ./spark:/opt/spark-apps
