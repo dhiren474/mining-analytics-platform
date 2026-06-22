@@ -1,0 +1,100 @@
+
+{
+  "title": "Mining Equipment Analytics",
+  "uid": "mining-overview",
+  "refresh": "10s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total Sensor Readings",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 0, "w": 4, "h": 4 },
+      "targets": [{
+        "datasource": "MiningPostgres",
+        "rawSql": "SELECT COUNT(*) as value FROM sensor_readings WHERE recorded_at >= NOW() - INTERVAL '1 hour'",
+        "format": "table"
+      }],
+      "options": { "colorMode": "background", "graphMode": "area" }
+    },
+    {
+      "id": 2,
+      "title": "Open Critical Alerts",
+      "type": "stat",
+      "gridPos": { "x": 4, "y": 0, "w": 4, "h": 4 },
+      "targets": [{
+        "datasource": "MiningPostgres",
+        "rawSql": "SELECT COUNT(*) as value FROM alerts WHERE resolved_at IS NULL AND severity = 'CRITICAL'",
+        "format": "table"
+      }],
+      "options": {
+        "colorMode": "background",
+        "thresholds": {
+          "steps": [
+            { "color": "green", "value": 0 },
+            { "color": "orange", "value": 1 },
+            { "color": "red", "value": 5 }
+          ]
+        }
+      }
+    },
+    {
+      "id": 3,
+      "title": "Equipment in Fault",
+      "type": "stat",
+      "gridPos": { "x": 8, "y": 0, "w": 4, "h": 4 },
+      "targets": [{
+        "datasource": "MiningPostgres",
+        "rawSql": "SELECT COUNT(*) as value FROM vw_equipment_latest WHERE status = 'fault'",
+        "format": "table"
+      }],
+      "options": { "colorMode": "background" }
+    },
+    {
+      "id": 4,
+      "title": "Engine Temperature Over Time",
+      "type": "timeseries",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 8 },
+      "targets": [{
+        "datasource": "MiningPostgres",
+        "rawSql": "SELECT recorded_at AS time, equipment_id, engine_temp_c AS value FROM sensor_readings WHERE recorded_at >= $__timeFrom() AND recorded_at <= $__timeTo() ORDER BY recorded_at",
+        "format": "time_series"
+      }],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "celsius",
+          "thresholds": {
+            "steps": [
+              { "color": "green",  "value": 0   },
+              { "color": "orange", "value": 100 },
+              { "color": "red",    "value": 105 }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Open Alerts",
+      "type": "table",
+      "gridPos": { "x": 0, "y": 12, "w": 24, "h": 8 },
+      "targets": [{
+        "datasource": "MiningPostgres",
+        "rawSql": "SELECT equipment_id, site_name, alert_type, severity, metric, value, message, triggered_at FROM vw_open_alerts LIMIT 50",
+        "format": "table"
+      }],
+      "options": { "sortBy": [{ "displayName": "triggered_at", "desc": true }] }
+    },
+    {
+      "id": 6,
+      "title": "Fleet Health by Site",
+      "type": "table",
+      "gridPos": { "x": 0, "y": 20, "w": 24, "h": 6 },
+      "targets": [{
+        "datasource": "MiningPostgres",
+        "rawSql": "SELECT site_name, equipment_type, total_machines, operating, in_fault, in_maintenance, avg_fuel_pct, avg_engine_temp FROM vw_site_fleet_health ORDER BY site_name",
+        "format": "table"
+      }]
+    }
+  ]
+}
