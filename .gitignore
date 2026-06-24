@@ -1,0 +1,59 @@
+# .gitignore
+
+# ── Secrets (NEVER commit these) ─────────────────────
+.env
+.env.*
+*.pem
+*.key
+*.cert
+secrets/
+
+# ── Python ────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+venv/
+.venv/
+env/
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# ── Jupyter ───────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Docker ────────────────────────────────────────────
+docker-compose.override.yml
+
+# ── Data & logs ───────────────────────────────────────
+data/raw/
+data/processed/
+logs/
+*.log
+
+# ── IDE ───────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# ── Airflow ───────────────────────────────────────────
+airflow/logs/
+airflow/plugins/__pycache__/
+
+# ── Spark ─────────────────────────────────────────────
+spark/checkpoints/
+spark-warehouse/
+
+# ── Postgres ──────────────────────────────────────────
+postgres/data/
+
+# ── Terraform (for later AWS phase) ──────────────────
+*.tfstate
+*.tfstate.backup
+.terraform/

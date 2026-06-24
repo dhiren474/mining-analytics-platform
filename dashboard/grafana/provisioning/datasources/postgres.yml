@@ -5,10 +5,10 @@ datasources:
   - name: MiningPostgres
     type: postgres
     url: postgres:5432
-    database: ${POSTGRES_DB}
-    user: ${POSTGRES_USER}
+    database: mining_analytics
+    user: admin
     secureJsonData:
-      password: ${POSTGRES_PASSWORD}
+      password: password123
     jsonData:
       sslmode: disable
       maxOpenConns: 10
@@ -17,3 +17,4 @@ datasources:
       postgresVersion: 1500
       timescaledb: false
     isDefault: true
+    editable: true

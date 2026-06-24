@@ -1,7 +1,8 @@
 # api/schemas.py
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional
+from uuid import UUID
 
 class EquipmentLatest(BaseModel):
     equipment_id:        str
@@ -19,8 +20,10 @@ class EquipmentLatest(BaseModel):
     fault_code:          Optional[str]
     hours_since_service: Optional[float]
 
+    model_config = {"from_attributes": True}
+
 class AlertSummary(BaseModel):
-    alert_id:     str
+    alert_id:     UUID          # ← was str, now UUID
     equipment_id: str
     site_id:      str
     site_name:    str
@@ -32,6 +35,8 @@ class AlertSummary(BaseModel):
     threshold:    float
     message:      str
     hours_open:   Optional[float]
+
+    model_config = {"from_attributes": True}
 
 class DailyKPI(BaseModel):
     equipment_id:         str
@@ -46,17 +51,21 @@ class DailyKPI(BaseModel):
     alert_count:          Optional[int]
     critical_alert_count: Optional[int]
 
+    model_config = {"from_attributes": True}
+
 class FleetHealth(BaseModel):
-    site_id:        str
-    site_name:      str
-    equipment_type: str
-    total_machines: int
-    operating:      Optional[int]
-    in_fault:       Optional[int]
-    in_maintenance: Optional[int]
-    avg_fuel_pct:   Optional[float]
+    site_id:         str
+    site_name:       str
+    equipment_type:  str
+    total_machines:  int
+    operating:       Optional[int]
+    in_fault:        Optional[int]
+    in_maintenance:  Optional[int]
+    avg_fuel_pct:    Optional[float]
     avg_engine_temp: Optional[float]
-    avg_vibration:  Optional[float]
+    avg_vibration:   Optional[float]
+
+    model_config = {"from_attributes": True}
 
 class SensorHistory(BaseModel):
     recorded_at:      datetime
@@ -67,11 +76,15 @@ class SensorHistory(BaseModel):
     engine_rpm:       Optional[float]
     status:           Optional[str]
 
+    model_config = {"from_attributes": True}
+
 class PipelineStats(BaseModel):
-    total_readings:       int
-    readings_last_hour:   int
-    readings_last_5min:   int
-    open_alerts:          int
-    critical_alerts:      int
-    equipment_in_fault:   int
-    last_reading_at:      Optional[datetime]
+    total_readings:      int
+    readings_last_hour:  int
+    readings_last_5min:  int
+    open_alerts:         int
+    critical_alerts:     int
+    equipment_in_fault:  int
+    last_reading_at:     Optional[datetime]
+
+    model_config = {"from_attributes": True}

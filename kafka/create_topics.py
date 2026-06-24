@@ -1,20 +1,24 @@
 # kafka/create_topics.py
+import os
 from kafka.admin import KafkaAdminClient, NewTopic
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 
 def create_topics():
+    bootstrap = os.getenv("KAFKA_BOOTSTRAP_SERVERS", "kafka:9092")
+    print(f"Connecting to Kafka at: {bootstrap}")
+
     admin = KafkaAdminClient(
-        bootstrap_servers=os.getenv("KAFKA_BOOTSTRAP_SERVERS"),
-        client_id="mining-admin"
+        bootstrap_servers=bootstrap,
+        client_id="mining-admin",
+        request_timeout_ms=30000,
     )
 
     topics = [
-        NewTopic(name="sensor-events",      num_partitions=6, replication_factor=1),
-        NewTopic(name="equipment-alerts",   num_partitions=3, replication_factor=1),
-        NewTopic(name="equipment-status",   num_partitions=3, replication_factor=1),
+        NewTopic(name="sensor-events",    num_partitions=6, replication_factor=1),
+        NewTopic(name="equipment-alerts", num_partitions=3, replication_factor=1),
+        NewTopic(name="equipment-status", num_partitions=3, replication_factor=1),
     ]
 
     existing = admin.list_topics()

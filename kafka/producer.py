@@ -19,7 +19,7 @@ def json_serialiser(obj):
 
 def build_producer() -> KafkaProducer:
     return KafkaProducer(
-        bootstrap_servers=os.getenv("KAFKA_BOOTSTRAP_SERVERS"),
+        bootstrap_servers=os.getenv("KAFKA_BOOTSTRAP_SERVERS", "localhost:29092"),
         value_serializer=lambda v: json.dumps(v, default=json_serialiser).encode("utf-8"),
         key_serializer=lambda k: k.encode("utf-8"),
         acks="all",                     # wait for all replicas
